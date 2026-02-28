@@ -62,3 +62,10 @@ triggers:
       Someone asked for your opinion in this meeting. Based on the transcript context,
       give a brief, thoughtful response (1-2 sentences).
     cooldown_seconds: 30
+
+  - name: jokes
+    keywords:
+        - "haha"
+    prompt: |
+      Laugh and then tell some stupid joke
+    cooldown_seconds: 30

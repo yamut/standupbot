@@ -225,6 +225,13 @@ def main() -> None:
     config_path = sys.argv[1] if len(sys.argv) > 1 else "config.yaml"
     config = load_config(config_path)
 
+    # Suppress noisy warnings from Kokoro's model internals (deprecated
+    # weight_norm API, LSTM dropout with num_layers=1). These are harmless
+    # and can't be fixed without modifying third-party code.
+    import warnings
+    warnings.filterwarnings("ignore", message=".*dropout option adds dropout.*")
+    warnings.filterwarnings("ignore", message=".*torch.nn.utils.weight_norm.*")
+
     # Load Whisper model on the main thread before Textual starts.
     # huggingface_hub's tqdm creates multiprocessing locks that crash
     # inside Textual's async worker thread pool.
