@@ -61,7 +61,7 @@ class StandupBotApp(App):
         self._paused.set()
         self._speaking = asyncio.Event()
         self._capture: AudioCapture | None = None
-        self._triggers_enabled = True
+        self._triggers_enabled = False
         self._analyzer: Analyzer | None = None
         self._speaker: SaySpeaker | KokoroSpeaker | None = None
 
@@ -132,7 +132,21 @@ class StandupBotApp(App):
 
                 # Check triggers (only if auto-triggers enabled)
                 if self._triggers_enabled:
-                    result = await analyzer.analyze(text)
+                    keyword_match = analyzer.check_keywords(text)
+                    if keyword_match:
+                        trigger, keyword = keyword_match
+                        responses_log = self.query_one("#responses", RichLog)
+                        responses_log.write(
+                            f"[bold yellow]Triggered:[/] [bold cyan]{trigger.name}[/] "
+                            f"[dim](matched: '{keyword}')[/]"
+                        )
+                        self.sub_title = f"Generating response for {trigger.name}..."
+                        analyzer.add_to_history(text)
+                        response = await analyzer.generate_response(trigger, text)
+                        result = TriggerMatch(trigger=trigger, matched_keyword=keyword, response=response)
+                    else:
+                        analyzer.add_to_history(text)
+                        result = None
                 else:
                     analyzer.add_to_history(text)
                     result = None
