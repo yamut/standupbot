@@ -1,0 +1,64 @@
+audio:
+  capture_device: "BlackHole 2ch"
+  playback_device: "BlackHole 2ch"
+  local_playback_device: "MacBook Pro Speakers"
+  sample_rate: 16000
+
+vad:
+  energy_threshold: 0.01
+  silence_duration_s: 1.5
+
+whisper:
+  model_size: "base.en"
+
+tts:
+#  engine: say            # "say" (default) or "kokoro"
+#  voice: "Samantha"      # say: voice name / kokoro: e.g. "af_heart"
+  engine: kokoro            # "say" (default) or "kokoro"
+  voice: "am_adam"      # say: voice name / kokoro: e.g. "af_heart"
+  rate: 175
+
+claude:
+  model: "sonnet"
+  allowed_tools:
+    - "mcp__MCP_DOCKER__jira_search"
+    - "mcp__MCP_DOCKER__jira_get_issue"
+    - "mcp__MCP_DOCKER__jira_get_project_issues"
+    - "mcp__MCP_DOCKER__jira_get_board_issues"
+    - "mcp__MCP_DOCKER__jira_get_sprint_issues"
+    - "mcp__MCP_DOCKER__jira_get_transitions"
+    - "mcp__MCP_DOCKER__jira_get_user_profile"
+    - "mcp__MCP_DOCKER__jira_get_worklog"
+    - "mcp__MCP_DOCKER__jira_get_agile_boards"
+    - "mcp__MCP_DOCKER__jira_get_all_projects"
+    - "mcp__MCP_DOCKER__jira_get_sprints_from_board"
+    - "mcp__MCP_DOCKER__jira_get_project_versions"
+    - "mcp__MCP_DOCKER__jira_get_link_types"
+    - "mcp__MCP_DOCKER__jira_search_fields"
+
+user_context: |
+  You are a helpful assistant attending a meeting on behalf of the user.
+  Keep responses brief and natural-sounding (1-3 sentences).
+  Respond as if you are the user speaking.
+
+triggers:
+  - name: standup_update
+    keywords:
+      - "your update"
+      - "your turn"
+      - "what about you"
+      - "go ahead"
+    prompt: |
+      standup update
+    cooldown_seconds: 60
+
+  - name: direct_question
+    keywords:
+      - "what do you think"
+      - "do you agree"
+      - "any thoughts"
+      - "your opinion"
+    prompt: |
+      Someone asked for your opinion in this meeting. Based on the transcript context,
+      give a brief, thoughtful response (1-2 sentences).
+    cooldown_seconds: 30

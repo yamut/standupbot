@@ -1,0 +1,26 @@
+[project]
+name = "standupbot"
+version = "0.1.0"
+description = "Meeting attendance bot with live transcription and AI responses"
+requires-python = ">=3.12"
+dependencies = [
+    "textual>=1.0.0",
+    "sounddevice>=0.5.0",
+    "numpy>=1.26.0",
+    "faster-whisper>=1.0.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+kokoro = [
+    "kokoro>=0.9",
+    "soundfile>=0.13",
+    "pip",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+standupbot = "standupbot.app:main"
